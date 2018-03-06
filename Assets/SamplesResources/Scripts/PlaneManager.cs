@@ -50,7 +50,7 @@ public class PlaneManager : MonoBehaviour
 
     const string EmulatorGroundPlane = "Emulator Ground Plane";
 
-    Sprite m_IconGroundMode, m_IconMidAirMode, m_IconPlacementMode;
+    Sprite m_IconPlacementMode;
 
     StateManager m_StateManager;
     SmartTerrain m_SmartTerrain;
@@ -59,7 +59,7 @@ public class PlaneManager : MonoBehaviour
 
     PlaneMode planeMode = PlaneMode.PLACEMENT;
 
-    GameObject m_PlaneAnchor, m_MidAirAnchor, m_PlacementAnchor;
+    GameObject m_PlacementAnchor;
 
     float m_PlacementAugmentationScale;
     int AutomaticHitTestFrameCount;
@@ -103,8 +103,6 @@ public class PlaneManager : MonoBehaviour
         // Enable floor collider if running on device; Disable if running in PlayMode
         Floor.gameObject.SetActive(!VuforiaRuntimeUtilities.IsPlayMode());
 
-        m_IconGroundMode = Resources.Load<Sprite>("icon_ground_mode");
-        m_IconMidAirMode = Resources.Load<Sprite>("icon_midair_mode");
         m_IconPlacementMode = Resources.Load<Sprite>("icon_placement_mode");
 
         m_TitleMode.text = TITLE_PLACEMENT;
