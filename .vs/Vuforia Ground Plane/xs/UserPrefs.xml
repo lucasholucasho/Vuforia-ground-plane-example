@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{5CB157B9-D12E-D807-E6C6-8DC477F7E530}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SamplesResources/Scripts/PlaneManager.cs">
+    <Files>
+      <File FileName="Assets/SamplesResources/Scripts/PlaneManager.cs" Line="431" Column="11" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Vuforia_220Ground_220Plane PreferredExecutionTarget="Unity.Editor" />
+  <MultiItemStartupConfigurations />
+</Properties>
