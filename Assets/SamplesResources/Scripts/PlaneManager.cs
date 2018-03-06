@@ -15,8 +15,6 @@ public class PlaneManager : MonoBehaviour
 {
     enum PlaneMode
     {
-        GROUND,
-        MIDAIR,
         PLACEMENT
     }
 
@@ -156,17 +154,12 @@ public class PlaneManager : MonoBehaviour
 
             // Set visibility of the surface indicator
             SetSurfaceIndicatorVisible(
-                planeMode == PlaneMode.GROUND ||
                 (planeMode == PlaneMode.PLACEMENT && Input.touchCount == 0));
 
             m_OnScreenMessage.transform.parent.gameObject.SetActive(true);
             m_OnScreenMessage.enabled = true;
 
-            if (planeMode == PlaneMode.GROUND)
-            {
-                m_OnScreenMessage.text = "Tap to place Astronaut";
-            }
-            else if (planeMode == PlaneMode.PLACEMENT)
+            if (planeMode == PlaneMode.PLACEMENT)
             {
                 m_OnScreenMessage.text = (m_PlacementAugmentation.activeInHierarchy) ?
                     "• Touch and drag to move Chair" +
@@ -181,7 +174,7 @@ public class PlaneManager : MonoBehaviour
         {
             // No automatic hit test, so set alpha based on which plane mode is active
             m_ScreenReticleGround.alpha =
-                (planeMode == PlaneMode.GROUND || planeMode == PlaneMode.PLACEMENT) ? 1 : 0;
+                (planeMode == PlaneMode.PLACEMENT) ? 1 : 0;
 
             SetSurfaceIndicatorVisible(false);
 
@@ -192,13 +185,9 @@ public class PlaneManager : MonoBehaviour
             // (during reset or pointing device above horizon line)
             m_PlacementPreview.SetActive(false);
 
-            if (planeMode == PlaneMode.GROUND || planeMode == PlaneMode.PLACEMENT)
+            if (planeMode == PlaneMode.PLACEMENT)
             {
                 m_OnScreenMessage.text = "Point device towards ground";
-            }
-            else if (planeMode == PlaneMode.MIDAIR)
-            {
-                m_OnScreenMessage.text = "Tap to place Drone";
             }
         }
     }
@@ -382,9 +371,7 @@ public class PlaneManager : MonoBehaviour
                     }
 
 
-                    if ((behaviour.Trackable.Name.Contains("PlaneAnchor") && planeMode == PlaneMode.GROUND) ||
-                        (behaviour.Trackable.Name.Contains("MidAirAnchor") && planeMode == PlaneMode.MIDAIR) ||
-                        (behaviour.Trackable.Name.Contains("PlacementAnchor") && planeMode == PlaneMode.PLACEMENT))
+                    if (behaviour.Trackable.Name.Contains("PlacementAnchor") && planeMode == PlaneMode.PLACEMENT)
                     {
                         destroyed +=
                             "\nGObj Name: " + behaviour.name +
