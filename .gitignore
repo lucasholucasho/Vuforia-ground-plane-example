@@ -1,7 +1,6 @@
 *.apk
-Future/
-GroundPlane/
 *.sh
+GroundPlane/
 # =============== #
 # Unity generated #
 # =============== #
@@ -36,4 +35,3 @@ ExportedObj/
 Icon?
 ehthumbs.db
 Thumbs.db
-Assets/SamplesResources/Scenes/3-GroundPlane.unity
