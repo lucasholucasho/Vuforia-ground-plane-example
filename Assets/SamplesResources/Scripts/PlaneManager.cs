@@ -22,8 +22,7 @@ public class PlaneManager : MonoBehaviour
 
     #region PUBLIC_MEMBERS
     public PlaneFinderBehaviour m_PlaneFinder;
-    public MidAirPositionerBehaviour m_MidAirPositioner;
-    public GameObject m_PlaneAugmentation, m_MidAirAugmentation, m_PlacementPreview, m_PlacementAugmentation;
+    public GameObject m_PlacementPreview, m_PlacementAugmentation;
     public Text m_TitleMode;
     public Text m_OnScreenMessage;
     public UnityEngine.UI.Image m_PlaneModeIcon;
@@ -259,34 +258,6 @@ public class PlaneManager : MonoBehaviour
         // Place object based on Ground Plane mode
         switch (planeMode)
         {
-            case PlaneMode.GROUND:
-
-                if (m_PositionalDeviceTracker != null && m_PositionalDeviceTracker.IsActive)
-                {
-                    DestroyAnchors();
-
-                    m_PlaneAnchor = m_PositionalDeviceTracker.CreatePlaneAnchor("MyPlaneAnchor_" + (++m_AnchorCounter), result);
-                    m_PlaneAnchor.name = "PlaneAnchor";
-
-                    m_ResetButton.interactable = true;
-                }
-
-                if (!m_PlaneAugmentation.activeInHierarchy)
-                {
-                    Debug.Log("Setting Plane Augmentation to Active");
-                    // On initial run, unhide the augmentation
-                    m_PlaneAugmentation.SetActive(true);
-                }
-
-                Debug.Log("Positioning Plane Augmentation at: " + result.Position);
-                // parent the augmentation to the anchor
-
-                m_PlaneAugmentation.transform.SetParent(m_PlaneAnchor.transform);
-                m_PlaneAugmentation.transform.localPosition = Vector3.zero;
-                RotateTowardCamera(m_PlaneAugmentation);
-
-                break;
-
             case PlaneMode.PLACEMENT:
 
                 if (m_PositionalDeviceTracker != null && m_PositionalDeviceTracker.IsActive)
@@ -328,68 +299,10 @@ public class PlaneManager : MonoBehaviour
         }
     }
 
-    public void PlaceObjectInMidAir(Transform midAirTransform)
-    {
-        Debug.Log("PlaceObjectInMidAir() called.");
-
-        if (planeMode != PlaneMode.MIDAIR)
-        {
-            Debug.Log("Invalid Ground Plane Mode:" + planeMode);
-            return;
-        }
-
-        if (m_PositionalDeviceTracker != null && m_PositionalDeviceTracker.IsActive)
-        {
-            DestroyAnchors();
-
-            m_MidAirAnchor = m_PositionalDeviceTracker.CreateMidAirAnchor("MyMidAirAnchor_" + (++m_AnchorCounter), midAirTransform);
-            m_MidAirAnchor.name = "MidAirAnchor";
-
-            if (!m_MidAirAugmentation.activeInHierarchy)
-            {
-                Debug.Log("Setting Mid-Air Augmentation to Active");
-                // On initial run, unhide the augmentation
-                m_MidAirAugmentation.SetActive(true);
-            }
-
-            Debug.Log("Positioning Mid-Air Augmentation at: " + midAirTransform.position.ToString());
-            // parent the augmentation to the anchor
-            m_MidAirAugmentation.transform.SetParent(m_MidAirAnchor.transform);
-            m_MidAirAugmentation.transform.localPosition = Vector3.zero;
-            RotateTowardCamera(m_MidAirAugmentation);
-        }
-    }
-
     #endregion // GROUNDPLANE_CALLBACKS
 
 
     #region PUBLIC_BUTTON_METHODS
-
-    public void SetGroundMode(bool active)
-    {
-        if (active)
-        {
-            planeMode = PlaneMode.GROUND;
-            m_TitleMode.text = TITLE_GROUNDPLANE;
-            m_PlaneModeIcon.sprite = m_IconGroundMode;
-            m_PlaneFinder.gameObject.SetActive(true);
-            m_MidAirPositioner.gameObject.SetActive(false);
-            m_TouchHandler.enableRotation = false;
-        }
-    }
-
-    public void SetMidAirMode(bool active)
-    {
-        if (active)
-        {
-            planeMode = PlaneMode.MIDAIR;
-            m_TitleMode.text = TITLE_MIDAIR;
-            m_PlaneModeIcon.sprite = m_IconMidAirMode;
-            m_PlaneFinder.gameObject.SetActive(false);
-            m_MidAirPositioner.gameObject.SetActive(true);
-            m_TouchHandler.enableRotation = false;
-        }
-    }
 
     public void SetPlacementMode(bool active)
     {
@@ -399,7 +312,6 @@ public class PlaneManager : MonoBehaviour
             m_TitleMode.text = TITLE_PLACEMENT;
             m_PlaneModeIcon.sprite = m_IconPlacementMode;
             m_PlaneFinder.gameObject.SetActive(true);
-            m_MidAirPositioner.gameObject.SetActive(false);
             m_TouchHandler.enableRotation = m_PlacementAugmentation.activeInHierarchy;
         }
     }
@@ -409,14 +321,6 @@ public class PlaneManager : MonoBehaviour
         Debug.Log("ResetScene() called.");
         
         // reset augmentations
-        m_PlaneAugmentation.transform.position = Vector3.zero;
-        m_PlaneAugmentation.transform.localEulerAngles = Vector3.zero;
-        m_PlaneAugmentation.SetActive(false);
-
-        m_MidAirAugmentation.transform.position = Vector3.zero;
-        m_MidAirAugmentation.transform.localEulerAngles = Vector3.zero;
-        m_MidAirAugmentation.SetActive(false);
-
         m_PlacementAugmentation.transform.position = Vector3.zero;
         m_PlacementAugmentation.transform.localEulerAngles = Vector3.zero;
         m_PlacementAugmentation.transform.localScale = ProductScaleVector;
@@ -472,12 +376,6 @@ public class PlaneManager : MonoBehaviour
 
                     switch (planeMode)
                     {
-                        case PlaneMode.GROUND:
-                            m_PlaneAugmentation.transform.parent = null;
-                            break;
-                        case PlaneMode.MIDAIR:
-                            m_MidAirAugmentation.transform.parent = null;
-                            break;
                         case PlaneMode.PLACEMENT:
                             m_PlacementAugmentation.transform.parent = null;
                             break;
@@ -506,14 +404,6 @@ public class PlaneManager : MonoBehaviour
         {
             switch (planeMode)
             {
-                case PlaneMode.GROUND:
-                    m_PlaneAugmentation.transform.parent = null;
-                    DestroyObject(m_PlaneAnchor);
-                    break;
-                case PlaneMode.MIDAIR:
-                    m_MidAirAugmentation.transform.parent = null;
-                    DestroyObject(m_MidAirAnchor);
-                    break;
                 case PlaneMode.PLACEMENT:
                     m_PlacementAugmentation.transform.parent = null;
                     DestroyObject(m_PlacementAnchor);
